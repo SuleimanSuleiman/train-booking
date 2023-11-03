@@ -1,0 +1,155 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  User
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  first_name   String    @db.VarChar(255)
+  last_name    String    @db.VarChar(255)
+  email        String    @unique(map: "user_email_unique") @db.VarChar(255)
+  confirmEmail Boolean   @default(false)
+  role         Role      @default(User)
+  age          Int?
+  phone        Int?
+  password     String    @db.VarChar(255)
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+  Session      Session?
+  bookings     booking[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model Session {
+  id     Int  @id @default(autoincrement())
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int  @unique
+}
+
+model train_station {
+  id           Int    @id @default(autoincrement())
+  station_name String @db.VarChar(255)
+
+  journey_stations journey_station[]
+
+  start_bookings booking[] @relation("start_train_station")
+  end_bookings   booking[] @relation("end_train_station")
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  booking    booking[]
+
+  @@map("train_stations")
+}
+
+model schedule {
+  id             Int             @id @default(autoincrement())
+  name           String          @db.VarChar(255)
+  train_journies train_journey[]
+  carrige_price  carrige_price[]
+  created_at     DateTime        @default(now())
+  updated_at     DateTime        @updatedAt
+}
+
+model train_journey {
+  id           Int    @id @default(autoincrement())
+  journey_name String @db.VarChar(255)
+
+  journey_stations  journey_station[]
+  journay_carriages journay_carriage[]
+  bookings          booking[]
+  schedule          schedule?          @relation(fields: [scheduleId], references: [id])
+  scheduleId        Int?
+  created_at        DateTime           @default(now())
+  updated_at        DateTime           @updatedAt
+}
+
+model journey_station {
+  id              Int            @id @default(autoincrement())
+  train_station   train_station? @relation(fields: [train_stationId], references: [id])
+  train_stationId Int?
+  train_journey   train_journey? @relation(fields: [train_journeyId], references: [id])
+  train_journeyId Int?
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @updatedAt
+}
+
+model carriage_class {
+  id                Int                @id @default(autoincrement())
+  class_name        String             @db.VarChar(255)
+  seating_capacity  Int
+  journay_carriages journay_carriage[]
+  carrige_price     carrige_price[]
+  bookings          booking[]
+  created_at        DateTime           @default(now())
+  updated_at        DateTime           @updatedAt
+}
+
+model journay_carriage {
+  id               Int             @id @default(autoincrement())
+  position         String
+  carriage_class   carriage_class? @relation(fields: [carriage_classId], references: [id])
+  carriage_classId Int?
+  train_journey    train_journey?  @relation(fields: [train_journeyId], references: [id])
+  train_journeyId  Int?
+  created_at       DateTime        @default(now())
+  updated_at       DateTime        @updatedAt
+}
+
+model carrige_price {
+  id               Int             @id @default(autoincrement())
+  price            Decimal
+  carriage_class   carriage_class? @relation(fields: [carriage_classId], references: [id])
+  carriage_classId Int?
+  schedule         schedule?       @relation(fields: [scheduleId], references: [id])
+  scheduleId       Int?
+  created_at       DateTime        @default(now())
+  updated_at       DateTime        @updatedAt
+}
+
+model booking_status {
+  id      Int       @id @default(autoincrement())
+  name    String    @db.VarChar(255)
+  booking booking[]
+}
+
+model booking {
+  id           Int      @id @default(autoincrement())
+  booking_date DateTime @default(now())
+  ticking_no   Int
+  amount_paid  String?  @db.VarChar(255)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  seat_no      Int
+  User         User?    @relation(fields: [userId], references: [id])
+  userId       Int?
+
+  start_train_station   train_station? @relation("start_train_station", fields: [start_train_stationId], references: [id])
+  start_train_stationId Int?
+  end_train_station     train_station? @relation("end_train_station", fields: [end_train_stationId], references: [id])
+  end_train_stationId   Int?
+
+  train_journey   train_journey? @relation(fields: [train_journeyId], references: [id])
+  train_journeyId Int?
+
+  carriage_class   carriage_class? @relation(fields: [carriage_classId], references: [id])
+  carriage_classId Int?
+  train_station    train_station?  @relation(fields: [train_stationId], references: [id])
+  train_stationId  Int?
+  booking_status   booking_status? @relation(fields: [booking_statusId], references: [id])
+  booking_statusId Int?
+}
