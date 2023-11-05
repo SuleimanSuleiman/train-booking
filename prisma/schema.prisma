@@ -84,6 +84,9 @@ model journey_station {
   train_stationId Int?
   train_journey   train_journey? @relation(fields: [train_journeyId], references: [id])
   train_journeyId Int?
+
+  departure_time  DateTime
+
   created_at      DateTime       @default(now())
   updated_at      DateTime       @updatedAt
 }

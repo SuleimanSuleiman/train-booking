@@ -42,8 +42,5 @@ export const GetAllDataForUser = (
         where: {
             id:userId
         },
-        include: {
-            houses: true
-        }
     })
 }

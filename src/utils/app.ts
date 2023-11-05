@@ -4,10 +4,16 @@ import bodyParser from "body-parser";
 import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
-import cookieParser from "cookie-parser"
+import cookieParser from "cookie-parser";
+import config from "config";
+
+import swaggerUI from "swagger-ui-express";
+import swaggerJSDOC from "swagger-jsdoc";
+
 
 import UsersRoutes from "../routes/users.routes";
 import StationRoutes from "../routes/stations.routes";
+import YAML from "yamljs";
 
 export default function App() {
 
@@ -23,9 +29,9 @@ export default function App() {
 
     app.use(cors({
         origin: "*",
-        // credentials:true
+        credentials:true
     }))
-
+ 
     app.use('/api/users', UsersRoutes);
     app.use('/api/stations', StationRoutes);
 
