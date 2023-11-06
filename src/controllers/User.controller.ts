@@ -16,7 +16,7 @@ export const index = async (req:Request,res:Response,next:NextFunction) => {
         if(!userData) HandleError(403,{"message":"pleace login"})
         const user = omit(userData, ["exp", "iat", "sessionId"]);
         const userAllData = await GetAllDataForUser(user.id);
-        return res.status(200).json(HandleSuccess(userAllData))
+        return res.status(200).json(HandleSuccess(omit(userAllData,"password")))
     } catch (error: any) {
         next(HandleError(400,{message:error.message}))
     }
@@ -43,11 +43,14 @@ export const register = async (
         res.cookie('access-token',tokens.accessToken)
         res.cookie('refresh-token',tokens.refreshToken)
 
-        return res.status(201).json(user);
+        return res.status(201).json(omit(user,"password"))
 
     } catch (error: any) {
-
-        next(HandleError(400,{"issues":[error]}))
+        if (error.code === 'P2002') {
+            next(HandleError(400,{"message":'There is a unique constraint violation, a new user cannot be created with this email'}))
+        }else{
+            next(HandleError(400,{"issues":[error]}))
+        }
     }
 }
 
