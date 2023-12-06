@@ -1,4 +1,4 @@
-import { TypeOf, date, number, object, string } from "zod";
+import { TypeOf, ZodIssueCode, boolean, date, number, object, string } from "zod";
 
 const stationPayload = {
     body: object({
@@ -11,6 +11,30 @@ const stationPayload = {
     })
     .strict()
 }
+
+
+function handleQuery(val:string){
+    if(val.toLowerCase() == 'true'){
+        return new Boolean(true);
+    }else if(val.toLowerCase() == 'false'){
+        return new Boolean(false);
+    }else{
+        ZodIssueCode.invalid_type
+    }
+}
+
+const getAllstations = {
+    query: object({
+        journey_stations: string()
+        .optional(),
+        start_bookings: string()
+        .optional(),
+        end_bookings: string()        
+        .optional(),
+    }).strict()
+}
+
+
 
 const getstation = {
     params: object({
@@ -62,22 +86,14 @@ const StoreTrainJourney = {
 
 export const getTrainJourney = {
     params: object({
-        id: string({
-            description: "Train Journey ID",
-            required_error: "Train Journey id is required",
-            invalid_type_error: "should be string",
-        })
+        id: string()
     })
     .strict()
 }
 
 export const getJourneyStation = {
     params: object({
-        id: string({
-            description: "Journey Station ID",
-            required_error: "Journey station id is required",
-            invalid_type_error: "should be string",
-        })
+        id: string()
     })
     .strict()
 }
@@ -102,6 +118,12 @@ export const StoreJourneyStation = {
     })
 }
 
+export const searchStation = {
+    query: object({
+        search: string()
+    }).strict()
+}
+
 
 export const StoreStationSchema = object({
     ...stationPayload
@@ -114,6 +136,14 @@ export const getStationSchema =  object({
 export const updateStationSchema = object({
     ...getstation,
     ...stationPayload
+})
+
+export const getAllStationsSchema = object({
+    ...getAllstations
+})
+
+export const searchStationSchema = object({
+    ...searchStation
 })
 
 
@@ -153,6 +183,8 @@ export type GetStationInput = TypeOf<typeof getStationSchema>
 
 export type UpdataStationInput = TypeOf<typeof updateStationSchema>
 
+export type searchStationInput = TypeOf<typeof searchStationSchema>
+
 //schedule
 export type GetScheduleInput = TypeOf<typeof getSheduleSchema>
 
@@ -169,3 +201,6 @@ export type getJourneyStationInput = TypeOf<typeof getJourneyStationSchema>
 
 
 export type CreateJourneyStationInput =  TypeOf<typeof StoreJourneyStationSchema>
+
+
+export type getAllStationsInput =  TypeOf<typeof getAllStationsSchema>
