@@ -1,0 +1,29 @@
+
+
+### Login
+
+POST  http://localhost:4000/api/users/login HTTP/1.1
+content-type: application/json
+
+{
+	"email": "zmamznan6126@gmail.com",
+	"password": "suleiman123"
+}
+
+### get all stations
+GET http://localhost:4000/api/stations/get-stations?journey_stations=true&start_bookings=true&end_bookings=true
+
+### search about stations   
+GET http://localhost:4000/api/stations/search-station?search=s
+
+### all train journey
+GET  http://localhost:4000/api/stations/all-train-journey
+
+
+### search train journey
+GET  http://localhost:4000/api/stations/search-train-journey?search=sa
+
+
+### stations covered in journey
+
+GET http://localhost:4000/api/stations/journey-stations/989

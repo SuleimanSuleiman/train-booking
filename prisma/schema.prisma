@@ -3,6 +3,8 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch","fullTextIndex"]
+  engineType = "binary"
 }
 
 datasource db {
@@ -51,8 +53,8 @@ model train_station {
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
-  booking    booking[]
 
+  @@fulltext([station_name])
   @@map("train_stations")
 }
 
@@ -73,6 +75,9 @@ model train_journey {
   journay_carriages journay_carriage[]
   bookings          booking[]
   schedule          schedule?          @relation(fields: [scheduleId], references: [id])
+  
+  order_stop String?
+  
   scheduleId        Int?
   created_at        DateTime           @default(now())
   updated_at        DateTime           @updatedAt
@@ -86,6 +91,7 @@ model journey_station {
   train_journeyId Int?
 
   departure_time  DateTime
+
 
   created_at      DateTime       @default(now())
   updated_at      DateTime       @updatedAt
@@ -104,7 +110,7 @@ model carriage_class {
 
 model journay_carriage {
   id               Int             @id @default(autoincrement())
-  position         String
+  position         Int
   carriage_class   carriage_class? @relation(fields: [carriage_classId], references: [id])
   carriage_classId Int?
   train_journey    train_journey?  @relation(fields: [train_journeyId], references: [id])
@@ -138,21 +144,20 @@ model booking {
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
   seat_no      Int
-  User         User?    @relation(fields: [userId], references: [id])
-  userId       Int?
+  User         User    @relation(fields: [userId], references: [id])
+  userId       Int
 
-  start_train_station   train_station? @relation("start_train_station", fields: [start_train_stationId], references: [id])
-  start_train_stationId Int?
-  end_train_station     train_station? @relation("end_train_station", fields: [end_train_stationId], references: [id])
-  end_train_stationId   Int?
+  start_train_station   train_station @relation("start_train_station", fields: [start_train_stationId], references: [id])
+  start_train_stationId Int
+  end_train_station     train_station @relation("end_train_station", fields: [end_train_stationId], references: [id])
+  end_train_stationId   Int
 
-  train_journey   train_journey? @relation(fields: [train_journeyId], references: [id])
-  train_journeyId Int?
+  train_journey   train_journey @relation(fields: [train_journeyId], references: [id])
+  train_journeyId Int
 
-  carriage_class   carriage_class? @relation(fields: [carriage_classId], references: [id])
-  carriage_classId Int?
-  train_station    train_station?  @relation(fields: [train_stationId], references: [id])
-  train_stationId  Int?
-  booking_status   booking_status? @relation(fields: [booking_statusId], references: [id])
-  booking_statusId Int?
+  carriage_class   carriage_class @relation(fields: [carriage_classId], references: [id])
+  carriage_classId Int
+  booking_status   booking_status @relation(fields: [booking_statusId], references: [id])
+  booking_statusId Int
 }
+ 

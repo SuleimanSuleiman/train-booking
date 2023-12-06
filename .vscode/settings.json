@@ -1,0 +1,5 @@
+{
+    "yaml.schemas": {
+        "swaggerviewer:openapi": "file:///d%3A/projects/node.js/tain_booking_api/src/utils/swagger.yml"
+    }
+}

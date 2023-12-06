@@ -1,0 +1,273 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "Train Booking System",
+      "description": "train booking system to help",
+      "license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      }
+    },
+    "host": "localhost:4000",
+    "basePath": "/api",
+    "tags": [
+      {
+        "name": "Users",
+        "description": "API for users in the system"
+      }
+
+    ],
+    "schemes": [
+      "http",
+      "https"
+    ],
+    "consumes": [
+      "application/json"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "securityDefinitions": {
+        "ApiKeyAuth":{
+          "type": "apiKey",
+          "in": "headers",
+          "name": "authorization"
+        }
+    },
+    "paths": {
+      "/users/login": {
+        "post": {
+          "summary": "Login user",
+          "tags": [
+            "Users"
+          ],
+          "description": "Login user in system",
+          "parameters": [
+            {
+              "name": "user",
+              "in": "body",
+              "description": "Login user",
+              "schema": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Login Success",
+              "schema": {
+                "$ref": "#/definitions/User"
+              }
+            },
+            "401":{
+              "description": "Login details are not valid!!"
+            },
+            "404":{
+              "description": "Email is not registered!"
+            },
+            "500":{
+              "description": "User login failed!!"
+            }
+          }
+        }
+      }
+    },
+
+    "definitions": {
+      "User": {
+        "properties": {
+          "first_name":{
+            "type": "string",
+            "example":"John",
+            "description": "First name "
+          },
+          "last_name":{
+            "type": "string",
+            "example":"Suleiman",
+            "description": "Last name "
+          },
+          "email": {
+            "type": "string",
+            "description": "Email User",
+            "example": "example@gmail.com"
+          },
+          "age":{
+            "type":"integer",
+            "example": 22
+          },
+          "phone":{
+            "type":"integer",
+            "example": 945248121
+          },
+          "password": {
+            "type": "string",
+            "description": "should be 6 chars minimun"
+          },
+          "passwordConfirmation":{
+            "type": "string",
+            "description": "password Confirmation"
+          }
+        }
+      },
+      "Session":{
+        "properties":{
+          "userId":{
+            "type": "number",
+            "description": "Forigen Key For User Model"
+          }
+        }
+      },
+      "train_station":{
+        "properties": {
+          "station_name":{
+            "type":"string",
+            "example": "Tartous"
+          }
+        }
+      },
+      "schedule":{
+        "properties": {
+          "name":{
+            "type":"string",
+            "example": "WeekEnd-weekday"
+          }
+        }
+      },
+      "train_journey":{
+        "properties": {
+          "journey_name": {
+            "type": "string",
+            "example": "20:10 journey from tatous to homs"
+          },
+          "scheduleId":{
+            "type": "number",
+            "description": "Forigen Key For schedule Model"
+          },
+          "order_stop": {
+            "type":"string",
+            "description": "order trains from source to distention"
+          }
+        }
+      },
+      "journey_station":{
+        "properties": {
+          "train_stationId":{
+            "type": "number",
+            "description": "Forigen Key For train_station Model"
+          },
+          "train_journeyId":{
+            "type": "number",
+            "description": "Forigen Key For train_journey Model"
+          },
+          "departure_time":{
+            "type":"string"
+          }
+        }
+      },
+      "carriage_class":{
+        "properties": {
+          "class_name":{
+            "type": "string",
+            "example": "First , Second , Thrid"
+          },
+          "seating_capacity":{
+            "type": "number",
+            "example": 30
+          }
+        }
+      },
+      "journay_carriage":{
+        "properties": {
+          "position": {
+            "type": "number",
+            "example": 30
+          },
+          "carriage_classId":{
+            "type": "number",
+            "description": "Forigen Key For carriage_class Model"
+          },
+          "train_journeyId":{
+            "type": "number",
+            "description": "Forigen Key For train_journey Model"
+          }
+        }
+      },
+      "carrige_price":{
+        "properties": {
+          "price":{
+            "type":"number",
+            "example":12.5
+          },
+          "carriage_classId":{
+            "type": "number",
+            "description": "Forigen Key For carriage_class Model"
+          },
+          "scheduleId":{
+            "type": "number",
+            "description": "Forigen Key For schedule Model"
+          }
+        }
+      },
+      "booking_status":{
+        "properties": {
+          "name":{
+            "type": "string",
+            "example": "Pinding"
+          }
+        }
+      },
+      "booking":{
+        "properties": {
+          "booking_date":{
+            "type":"string"
+          },
+          "ticking_no":{
+            "type":"integer",
+            "example":20
+          },
+          "amount_paid":{
+            "type":"string"
+          },
+          "seat_no":{
+            "type":"integer",
+            "example":20
+          },
+          "userId":{
+            "type": "number",
+            "description": "Forigen Key For User Model"
+          },
+          "start_train_stationId":{
+            "type": "number",
+            "description": "Forigen Key For train_station Model"
+          },
+          "end_train_stationId":{
+            "type": "number",
+            "description": "Forigen Key For train_station Model"
+          },
+          "train_journeyId":{
+            "type": "number",
+            "description": "Forigen Key For train_journey Model"
+          },
+          "carriage_classId":{
+            "type": "number",
+            "description": "Forigen Key For carriage_class Model"
+          },
+          "booking_statusId":{
+            "type": "number",
+            "description": "Forigen Key For booking_status Model"
+          }
+        }
+      },
+      "userEmail":{
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }

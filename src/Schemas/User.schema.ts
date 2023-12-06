@@ -14,7 +14,7 @@ const StorePayload = {
         age: number({
              required_error: "number is required",
         }),
-         phone: number({
+        phone: string({
             required_error: "phone is required",
         }),
         password: string({
